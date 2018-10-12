@@ -399,7 +399,7 @@ function showMessages()
         });
 }
 
-$(document).ready(function()
+$(function()
     {
 
         listChannels(compareNew); loadEmojis();
