@@ -1,3 +1,19 @@
+$(document).ready(function()
+    {
+
+        listChannels(compareNew); loadEmojis();
+        setInterval(function(){
+            console.log('Updating message elements…');
+            $.each(currentChannel.messages,function(index,value)
+            {
+                //alert('hello');
+               value.update();
+                });
+
+        },10000);
+    });
+
+
 /* start the external action and say hello */
 console.log("App is alive");
 
@@ -27,7 +43,7 @@ var currentLocation = {
  * Switch channels name in the right app bar
  * @param channelObject
  */
-function switchChannel(channelObject) {
+function switchChannel(channelObject,channelElement) {
     // Log the channel switch
     console.log("Tuning in to channel", channelObject);
 
@@ -52,10 +68,12 @@ function switchChannel(channelObject) {
     /* highlight the selected #channel.
        This is inefficient (jQuery has to search all channel list items), but we'll change it later on */
     $('#channels li').removeClass('selected');
-    $('#channels li:contains(' + channelObject.name + ')').addClass('selected');
-
+    //$('#channels li:contains(' + channelObject.name + ')').addClass('selected');
+    $(channelElement).addClass('selected')
     /* store selected channel in global variable */
     currentChannel = channelObject;
+    showMessages();
+    console.log(currentChannel.messages);
 }
 
 /* liking a channel on #click */
@@ -126,6 +144,7 @@ function Message(text) {
     this.text = text;
     // own message
     this.own = true;
+    
 }
 
 function sendMessage() {
@@ -169,7 +188,7 @@ function createMessageElement(messageObject) {
     var expiresIn = Math.round((messageObject.expiresOn - Date.now()) / 1000 / 60);
 
     // Creating a message-element
-    return '<div class="message'+
+    var messageElement=$('<div class="message'+
         //this dynamically adds #own to the #message, based on the
         //ternary operator. We need () in order not to disrupt the return.
         (messageObject.own ? ' own' : '') +
@@ -179,8 +198,26 @@ function createMessageElement(messageObject) {
         messageObject.createdOn.toLocaleString() +
         '<em>' + expiresIn + ' min. left</em></h3>' +
         '<p>' + messageObject.text + '</p>' +
-        '<button class="accent">+5 min.</button>' +
-        '</div>';
+        '<button class="accent" >+5 min.</button>' +
+        '</div>');
+    messageObject['messageElement']=messageElement;
+
+ messageObject.update=function()
+    {
+        var remain=((this.expiresOn - Date.now()) / 1000 / 60).toFixed(1);
+      
+        
+            $(this.messageElement).find('em').html(remain+" min. left");
+        
+    };
+$(messageObject.messageElement).find('button').click(function(){
+var x=(messageObject.expiresOn.getTime()+5*1000*60);
+var d=new Date();
+d.setTime(x);
+messageObject.expiresOn=d;
+messageObject.update();
+});
+    return messageElement;
 }
 
 /* #10 Three #compare functions to #sort channels */
@@ -223,7 +260,11 @@ function listChannels(criterion) {
 
     /* #10 append channels from #array with a #for loop */
     for (i = 0; i < channels.length; i++) {
-        $('#channels ul').append(createChannelElement(channels[i]));
+        var ce=createChannelElement(channels[i]);
+        $('#channels ul').append(ce);
+        if (currentChannel==channels[i]) {
+            switchChannel(currentChannel,ce);
+        }
     };
 }
 
@@ -325,6 +366,11 @@ function createChannelElement(channelObject) {
     // The chevron
     $('<i>').addClass('fas').addClass('fa-chevron-right').appendTo(meta);
 
+    $(channel).click(function()
+        {
+            switchChannel(channelObject,channel);
+        });
+
     // return the complete channel
     return channel;
 }
@@ -354,4 +400,15 @@ function abortCreationMode() {
     $('#app-bar-create').removeClass('show');
     $('#button-create').hide();
     $('#button-send').show();
+}
+
+function showMessages()
+{
+    $('#messages').empty();
+
+    $.each(currentChannel.messages,function(index,value)
+        {
+           
+            $('#messages').append(createMessageElement(value));
+        });
 }

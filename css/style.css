@@ -421,6 +421,7 @@ button.accent {
     color: black;
 }
 
+
 /* #9 #btns #hvr hovering and pressing any button leads to 15% darkened background-color*/
 button:hover, button:active {
     background-color: #D9D9D9;
