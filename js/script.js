@@ -398,12 +398,12 @@ function showMessages()
             $('#messages').append(createMessageElement(value));
         });
 }
+listChannels(compareNew);
 
 $(function()
     {
 
-        loadEmojis(); listChannels();
-        setInterval(function(){
+        loadEmojis();         setInterval(function(){
             console.log('Updating message elements…');
             $.each(currentChannel.messages,function(index,value)
             {
