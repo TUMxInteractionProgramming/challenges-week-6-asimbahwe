@@ -402,7 +402,7 @@ function showMessages()
 $(function()
     {
 
-        listChannels(compareNew); loadEmojis();
+        loadEmojis(); listChannels();
         setInterval(function(){
             console.log('Updating message elements…');
             $.each(currentChannel.messages,function(index,value)
