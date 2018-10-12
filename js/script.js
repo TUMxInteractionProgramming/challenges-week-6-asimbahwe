@@ -1,17 +1,3 @@
-$(document).ready(function()
-    {
-
-        listChannels(compareNew); loadEmojis();
-        setInterval(function(){
-            console.log('Updating message elements…');
-            $.each(currentChannel.messages,function(index,value)
-            {
-                //alert('hello');
-               value.update();
-                });
-
-        },10000);
-    });
 
 
 /* start the external action and say hello */
@@ -412,3 +398,18 @@ function showMessages()
             $('#messages').append(createMessageElement(value));
         });
 }
+
+$(document).ready(function()
+    {
+
+        listChannels(compareNew); loadEmojis();
+        setInterval(function(){
+            console.log('Updating message elements…');
+            $.each(currentChannel.messages,function(index,value)
+            {
+                //alert('hello');
+               value.update();
+                });
+
+        },10000);
+    });
