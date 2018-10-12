@@ -193,7 +193,14 @@ function createMessageElement(messageObject) {
         var remain=((this.expiresOn - Date.now()) / 1000 / 60).toFixed(1);
       
         
-            $(this.messageElement).find('em').html(remain+" min. left");
+            
+            if(remain<5)
+            {
+                $(this.messageElement).find('em').css("color","#3F51B5").html(remain+" min. left");
+            }else
+            {
+                $(this.messageElement).find('em').html(remain+" min. left");
+            }
         
     };
 $(messageObject.messageElement).find('button').click(function(){
